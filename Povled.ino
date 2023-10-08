@@ -27,7 +27,7 @@ FASTLED_USING_NAMESPACE
 
 #define SD_SELECT 4
 
-bool image[NUM_LEDS][NUM_LEDS];
+CRGB image[NUM_LEDS][NUM_LEDS];
 CRGB leds[NUM_LEDS];
 File imageFile;
 unsigned long image_start_address = 0;
@@ -68,12 +68,9 @@ bmp_image_header_t imageHeader;
 void setup() {
   // Setup serial
   Serial.begin(9600);
-   while (!Serial) {
-    ; // wait for serial port to connect. Needed for Leonardo only
-  }
 
   // Setup LEDs
-  delay(3000); // 3 second delay for recovery
+  delay(100); // 3 second delay for recovery
   FastLED.addLeds<LED_TYPE,DATA_PIN,CLK_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(BRIGHTNESS);
 
@@ -89,7 +86,16 @@ void setup() {
 }
 
 void loadImage(){
-  imageFile = SD.open("0000.bmp", FILE_READ);
+  char filename[] = "0002.bmp";
+  if (!SD.exists(filename))
+  {
+    Serial.println("File does not exist");
+  }
+  else
+  {
+    Serial.println("File exists");
+  }
+  imageFile = SD.open(filename, FILE_READ);
   // Read the file header
   imageFile.read(&fileHeader, sizeof(fileHeader));
   imageFile.read(&imageHeader, sizeof(imageHeader));
@@ -107,11 +113,14 @@ void loadImage(){
     for (int j = 0; j < NUM_LEDS; j++)
     {
       byte r, g, b;
-      b = imageFile.read();
-      g = imageFile.read();
       r = imageFile.read();
+      g = imageFile.read();
+      b = imageFile.read();
       
-      image[i][j] = (b > 0 || g > 0 || r > 0);
+//      image[i][j] = (b > 0 || g > 0 || r > 0);
+      image[j][i].red = r;
+      image[j][i].green = g;
+      image[j][i].blue = b;
     }
   }
   
@@ -145,6 +154,7 @@ void inspectImage(){
 void loop()
 {
     nextRow();
+    delayMicroseconds(75);
 }
 
 void nextRow()
@@ -158,7 +168,8 @@ void nextRow()
 
   for (int i = 0; i < NUM_LEDS; i++)
   {
-    leds[i] = image[image_row][i] ? CRGB::Blue : CRGB::Black; 
+//    leds[i] = image[image_row][i] ? CRGB::Blue : CRGB::Black; 
+    leds[i] = image[image_row][i];
   }
 
   FastLED.show();
