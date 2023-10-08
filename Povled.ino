@@ -113,8 +113,8 @@ void loadImage(){
     for (int j = 0; j < NUM_LEDS; j++)
     {
       byte r, g, b;
-      r = imageFile.read();
       g = imageFile.read();
+      r = imageFile.read();
       b = imageFile.read();
       
 //      image[i][j] = (b > 0 || g > 0 || r > 0);
