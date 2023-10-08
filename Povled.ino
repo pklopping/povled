@@ -78,7 +78,7 @@ void setup() {
   FastLED.setBrightness(BRIGHTNESS);
 
   // Setup SD
-  if (!SD.begin(53)) {
+  if (!SD.begin(BUILTIN_SDCARD)) {
     Serial.println("SD init failed");
     return;
   }
