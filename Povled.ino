@@ -2,6 +2,8 @@
 /// @brief   FastLED "100 lines of code" demo reel, showing off some effects
 /// @example DemoReel100.ino
 
+#include <SPI.h>
+#include <SD.h>
 #include <FastLED.h>
 
 FASTLED_USING_NAMESPACE
@@ -16,68 +18,148 @@ FASTLED_USING_NAMESPACE
 // -Mark Kriegsman, December 2014
 
 
-#define DATA_PIN    4
-#define CLK_PIN     3
+#define DATA_PIN    7
+#define CLK_PIN     6
 #define LED_TYPE    APA102
 #define COLOR_ORDER GRB
 //#define NUM_LEDS  144
-#define NUM_LEDS    8
+#define NUM_LEDS    64
 
+#define SD_SELECT 4
+
+bool image[NUM_LEDS][NUM_LEDS];
 CRGB leds[NUM_LEDS];
+File imageFile;
+unsigned long image_start_address = 0;
+unsigned long image_end_address = 0;
+unsigned long image_ptr = 0;
+int image_row = 0;
 
-uint8_t cur_image = 0;
-uint8_t cur_row = 0;
-
-int images[1][NUM_LEDS][NUM_LEDS] = {
-  {
-    {255, 0, 0, 0, 0, 0, 0, 255},
-    {0, 255, 0, 0, 0, 0, 255, 0},
-    {0, 0, 255, 0, 0, 255, 0, 0},
-    {0, 0, 0, 255, 255, 0, 0, 0},
-    {0, 0, 0, 255, 255, 0, 0, 0},
-    {0, 0, 255, 0, 0, 255, 0, 0},
-    {0, 255, 0, 0, 0, 0, 255, 0},
-    {255, 0, 0, 0, 0, 0, 0, 255},
-  }
+// Code stolen from: https://arduino.stackexchange.com/questions/19795/how-to-read-bitmap-image-on-arduino
+struct bmp_file_header_t {
+  uint16_t signature;
+  uint32_t file_size;
+  uint16_t reserved[2];
+  uint32_t image_offset;
 };
 
-#define BRIGHTNESS          96
+struct bmp_image_header_t {
+  uint32_t header_size;
+  uint32_t image_width;
+  uint32_t image_height;
+  uint16_t color_planes;
+  uint16_t bits_per_pixel;
+  uint32_t compression_method;
+  uint32_t image_size;
+  uint32_t horizontal_resolution;
+  uint32_t vertical_resolution;
+  uint32_t colors_in_palette;
+  uint32_t important_colors;
+};
+
+
+bmp_file_header_t fileHeader;
+bmp_image_header_t imageHeader;
+
+#define BRIGHTNESS          24
 #define FRAMES_PER_SECOND  120
 
+
 void setup() {
+  // Setup serial
+  Serial.begin(9600);
+   while (!Serial) {
+    ; // wait for serial port to connect. Needed for Leonardo only
+  }
+
+  // Setup LEDs
   delay(3000); // 3 second delay for recovery
   FastLED.addLeds<LED_TYPE,DATA_PIN,CLK_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(BRIGHTNESS);
+
+  // Setup SD
+  if (!SD.begin(53)) {
+    Serial.println("SD init failed");
+    return;
+  }
+  Serial.println("SD Init done.");
+
+  loadImage();
+  
+}
+
+void loadImage(){
+  imageFile = SD.open("0000.bmp", FILE_READ);
+  // Read the file header
+  imageFile.read(&fileHeader, sizeof(fileHeader));
+  imageFile.read(&imageHeader, sizeof(imageHeader));
+
+  inspectImage();
+
+  image_start_address = fileHeader.image_offset;
+  image_ptr = image_start_address;
+  image_end_address = image_start_address + imageHeader.image_size;
+
+  // Load image into memory
+  imageFile.seek(image_start_address);
+  for (int i = 0; i < NUM_LEDS; i++)
+  {
+    for (int j = 0; j < NUM_LEDS; j++)
+    {
+      byte r, g, b;
+      b = imageFile.read();
+      g = imageFile.read();
+      r = imageFile.read();
+      
+      image[i][j] = (b > 0 || g > 0 || r > 0);
+    }
+  }
+  
+}
+
+void inspectImage(){
+  Serial.print("Signature: ");
+  Serial.println(fileHeader.signature);
+  Serial.print("File Size: ");
+  Serial.println(fileHeader.file_size);
+  Serial.print("Image Offset: ");
+  Serial.println(fileHeader.image_offset);
+  Serial.println("- - - - - - - - - - - -");
+  Serial.print("Image Width: ");
+  Serial.println(imageHeader.image_width);
+  Serial.print("Image Height: ");
+  Serial.println(imageHeader.image_height);
+  Serial.print("Color Planes: ");
+  Serial.println(imageHeader.color_planes);
+  Serial.print("Bits Per Pixel: ");
+  Serial.println(imageHeader.bits_per_pixel);
+  Serial.print("image_size: ");
+  Serial.println(imageHeader.image_size);
+  Serial.print("Horizontal Resolution: ");
+  Serial.println(imageHeader.horizontal_resolution);
+  Serial.print("Vertical Resolution: ");
+  Serial.println(imageHeader.vertical_resolution);
 }
 
 
 void loop()
 {
-  // Show the current frame
-
-  // send the 'leds' array out to the actual LED strip
-  FastLED.show();  
-  // insert a delay to keep the framerate modest
-//  FastLED.delay(1000/FRAMES_PER_SECOND); 
-
-//  // do some periodic updates
-//  EVERY_N_MILLISECONDS( 20 ) { gHue++; } // slowly cycle the "base color" through the rainbow
-//  EVERY_N_SECONDS( 10 ) { nextPattern(); } // change patterns periodically
-    EVERY_N_MILLISECONDS (1) {nextRow(); }
+    nextRow();
 }
 
 void nextRow()
 {
-  cur_row++;
-
-  if (cur_row >= NUM_LEDS)
+  image_row++;
+  if (image_row >= NUM_LEDS)
   {
-    cur_row = 0;
-    FastLED.delay(5);
+    image_row = 0;
+    FastLED.delay(10);
   }
 
   for (int i = 0; i < NUM_LEDS; i++)
   {
-    leds[i] = images[cur_image][cur_row][i];
+    leds[i] = image[image_row][i] ? CRGB::Blue : CRGB::Black; 
   }
+
+  FastLED.show();
 }
