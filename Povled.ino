@@ -64,7 +64,7 @@ struct bmp_image_header_t {
 bmp_file_header_t fileHeader;
 bmp_image_header_t imageHeader;
 
-#define BRIGHTNESS          24
+#define BRIGHTNESS          255
 #define FRAMES_PER_SECOND  120
 
 
