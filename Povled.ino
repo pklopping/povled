@@ -163,14 +163,14 @@ void nextRow()
   if (image_row >= NUM_LEDS)
   {
     image_row = 0;
-    FastLED.delay(10);
+//    FastLED.delay(10);
   }
 
-  for (int i = 0; i < NUM_LEDS; i++)
-  {
-//    leds[i] = image[image_row][i] ? CRGB::Blue : CRGB::Black; 
-    leds[i] = image[image_row][i];
-  }
+  memmove( &leds[0], &image[image_row][0], NUM_LEDS * sizeof(CRGB));
+//  for (int i = 0; i < NUM_LEDS; i++)
+//  {
+//    leds[i] = image[image_row][i];
+//  }
 
   FastLED.show();
 }
