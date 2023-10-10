@@ -35,6 +35,9 @@ unsigned long image_end_address = 0;
 unsigned long image_ptr = 0;
 int image_row = 0;
 
+int frame_counter = 0;
+unsigned long last_time = 0;
+
 // Code stolen from: https://arduino.stackexchange.com/questions/19795/how-to-read-bitmap-image-on-arduino
 struct bmp_file_header_t {
   uint16_t signature;
@@ -154,7 +157,6 @@ void inspectImage(){
 void loop()
 {
     nextRow();
-    delayMicroseconds(75);
 }
 
 void nextRow()
@@ -163,14 +165,23 @@ void nextRow()
   if (image_row >= NUM_LEDS)
   {
     image_row = 0;
-//    FastLED.delay(10);
+    frame_counter++;
+
+    #define FRAME_AGG 100
+    if (frame_counter == FRAME_AGG)
+    {
+      unsigned long new_time = micros();
+      long double fps = ((long double)FRAME_AGG / ((long double)new_time - (long double)last_time)) * 1000 * 1000;
+      Serial.print((int)fps);
+      Serial.println();
+      frame_counter = 0;
+      delay(5);
+      last_time = micros();
+    }
   }
 
+  // Copy image to leds array
   memmove( &leds[0], &image[image_row][0], NUM_LEDS * sizeof(CRGB));
-//  for (int i = 0; i < NUM_LEDS; i++)
-//  {
-//    leds[i] = image[image_row][i];
-//  }
 
   FastLED.show();
 }
