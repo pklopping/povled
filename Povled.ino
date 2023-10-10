@@ -167,17 +167,17 @@ void nextRow()
     image_row = 0;
     frame_counter++;
 
-    #define FRAME_AGG 100
-    if (frame_counter == FRAME_AGG)
-    {
-      unsigned long new_time = micros();
-      long double fps = ((long double)FRAME_AGG / ((long double)new_time - (long double)last_time)) * 1000 * 1000;
-      Serial.print((int)fps);
-      Serial.println();
-      frame_counter = 0;
-      delay(5);
-      last_time = micros();
-    }
+//    #define FRAME_AGG 100
+//    if (frame_counter == FRAME_AGG)
+//    {
+//      unsigned long new_time = micros();
+//      long double fps = ((long double)FRAME_AGG / ((long double)new_time - (long double)last_time)) * 1000 * 1000;
+//      Serial.print((int)fps);
+//      Serial.println();
+//      frame_counter = 0;
+//      delay(5);
+//      last_time = micros();
+//    }
   }
 
   // Copy image to leds array
