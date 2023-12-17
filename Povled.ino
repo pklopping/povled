@@ -89,7 +89,8 @@ void setup() {
 }
 
 void loadImage(){
-  char filename[] = "0002.bmp";
+//  char filename[] = "0002.bmp";
+  char filename[] = "tree.bmp";
   if (!SD.exists(filename))
   {
     Serial.println("File does not exist");
