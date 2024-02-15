@@ -1,22 +1,8 @@
-/// @file    DemoReel100.ino
-/// @brief   FastLED "100 lines of code" demo reel, showing off some effects
-/// @example DemoReel100.ino
-
 #include <SPI.h>
 #include <SD.h>
 #include <FastLED.h>
 
 FASTLED_USING_NAMESPACE
-
-// FastLED "100-lines-of-code" demo reel, showing just a few 
-// of the kinds of animation patterns you can quickly and easily 
-// compose using FastLED.  
-//
-// This example also shows one easy way to define multiple 
-// animations patterns and have them automatically rotate.
-//
-// -Mark Kriegsman, December 2014
-
 
 #define DATA_PIN    7
 #define CLK_PIN     6
@@ -117,8 +103,8 @@ void loadImage(){
     for (int j = 0; j < NUM_LEDS; j++)
     {
       byte r, g, b;
-      g = imageFile.read();
       r = imageFile.read();
+      g = imageFile.read();
       b = imageFile.read();
       
 //      image[i][j] = (b > 0 || g > 0 || r > 0);
