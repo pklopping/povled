@@ -7,7 +7,7 @@ FASTLED_USING_NAMESPACE
 #define DATA_PIN    7
 #define CLK_PIN     6
 #define LED_TYPE    APA102
-#define COLOR_ORDER GRB
+#define COLOR_ORDER BGR
 //#define NUM_LEDS  144
 #define NUM_LEDS    64
 
@@ -103,9 +103,9 @@ void loadImage(){
     for (int j = 0; j < NUM_LEDS; j++)
     {
       byte r, g, b;
+      b = imageFile.read();
       g = imageFile.read();
       r = imageFile.read();
-      b = imageFile.read();
       
 //      image[i][j] = (b > 0 || g > 0 || r > 0);
       image[j][i].red = r;
