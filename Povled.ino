@@ -1,6 +1,6 @@
 #include <SPI.h>
-#include <SD.h>
 #include <FastLED.h>
+#include <SD.h>
 
 FASTLED_USING_NAMESPACE
 
@@ -104,8 +104,8 @@ void loadImage(){
     {
       byte r, g, b;
       g = imageFile.read();
-      b = imageFile.read();
       r = imageFile.read();
+      b = imageFile.read();
       
 //      image[i][j] = (b > 0 || g > 0 || r > 0);
       image[j][i].red = r;
