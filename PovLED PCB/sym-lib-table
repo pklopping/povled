@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "PovLED")(type "KiCad")(uri "${KIPRJMOD}/PovLED.kicad_sym")(options "")(descr ""))
+)
