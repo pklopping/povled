@@ -6401,7 +6401,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Rotary_Encoder:RotaryEncoder_Bourns_Vertical_PEC12R-3x17F-Sxxxx"
+		(property "Footprint" "PovLED:RotaryEncoder_Bourns_Vertical_PEC12R-3x17F-Sxxxx"
 			(at 66.04 34.036 0)
 			(effects
 				(font
@@ -7024,7 +7024,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Rotary_Encoder:RotaryEncoder_Bourns_Vertical_PEC12R-3x17F-Sxxxx"
+		(property "Footprint" "PovLED:RotaryEncoder_Bourns_Vertical_PEC12R-3x17F-Sxxxx"
 			(at 212.09 34.036 0)
 			(effects
 				(font
@@ -8670,7 +8670,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Rotary_Encoder:RotaryEncoder_Bourns_Vertical_PEC12R-3x17F-Sxxxx"
+		(property "Footprint" "PovLED:RotaryEncoder_Bourns_Vertical_PEC12R-3x17F-Sxxxx"
 			(at 138.43 34.036 0)
 			(effects
 				(font
