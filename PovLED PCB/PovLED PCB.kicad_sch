@@ -7904,7 +7904,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_Card:microSD_HC_Molex_104031-0811"
+		(property "Footprint" "PovLED:microSD_HC_Molex_104031-0811"
 			(at 307.34 85.09 0)
 			(effects
 				(font
@@ -8071,7 +8071,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Panel Adaptor:ESP32-S3-DevKitC-1-N8R8"
+		(property "Footprint" "PovLED:ESP32-S3-DevKitC-1-N8R8"
 			(at 113.03 125.73 0)
 			(effects
 				(font
