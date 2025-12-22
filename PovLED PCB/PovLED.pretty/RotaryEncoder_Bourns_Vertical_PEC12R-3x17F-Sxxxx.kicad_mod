@@ -545,7 +545,7 @@
 		(uuid "f195600b-e0d3-4ca4-8695-0ea573417407")
 	)
 	(embedded_fonts no)
-	(model "${KIPRJMOD}/COTS/PEC11R-4215K-S0012.stp"
+	(model "${KIPRJMOD}/COTS/PEC11R-4215F-S0012.stp"
 		(offset
 			(xyz 7.5 -2.5 5.5)
 		)
@@ -554,6 +554,17 @@
 		)
 		(rotate
 			(xyz -90 -0 -90)
+		)
+	)
+	(model "${KIPRJMOD}/COTS/ACCKIS2012NLD6.stp"
+		(offset
+			(xyz 7.5 -2.5 -16)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -0 -0 180)
 		)
 	)
 )
