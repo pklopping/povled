@@ -25,14 +25,14 @@ int frame_counter = 0;
 unsigned long last_time = 0;
 
 // Code stolen from: https://arduino.stackexchange.com/questions/19795/how-to-read-bitmap-image-on-arduino
-struct bmp_file_header_t {
+struct __attribute__((packed)) bmp_file_header_t {
   uint16_t signature;
   uint32_t file_size;
   uint16_t reserved[2];
   uint32_t image_offset;
 };
 
-struct bmp_image_header_t {
+struct __attribute__((packed)) bmp_image_header_t {
   uint32_t header_size;
   uint32_t image_width;
   uint32_t image_height;
@@ -98,19 +98,25 @@ void loadImage(){
 
   // Load image into memory
   imageFile.seek(image_start_address);
+  int row_bytes = imageHeader.image_width * 3;
+  int row_padding = (4 - (row_bytes % 4)) % 4;
   for (int i = 0; i < NUM_LEDS; i++)
   {
     for (int j = 0; j < NUM_LEDS; j++)
     {
       byte r, g, b;
-      r = imageFile.read();
       b = imageFile.read();
       g = imageFile.read();
-      
+      r = imageFile.read();
+
 //      image[i][j] = (b > 0 || g > 0 || r > 0);
       image[j][i].red = r;
       image[j][i].green = g;
       image[j][i].blue = b;
+    }
+    if (row_padding > 0)
+    {
+      imageFile.seek(imageFile.position() + row_padding);
     }
   }
   
